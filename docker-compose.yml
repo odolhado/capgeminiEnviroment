@@ -1,0 +1,39 @@
+version: "2.0"
+
+services:
+    nginx:
+        build: 'docker/nginx'
+        container_name: cg-nginx
+        links:
+            - 'php-fpm'
+        ports:
+            - '8088:80'
+            - '8000:8000'
+            - '7000:7000'
+        restart: 'always'
+        volumes_from:
+            - 'php-fpm'
+
+    php-fpm:
+        build: 'docker/php-fpm'
+        container_name: cg-php
+        ports:
+            - "9000:9000"
+        volumes:
+            - './www/:/var/www/'
+        links:
+            - postgres
+        working_dir: /var/www
+
+    postgres:
+        image: postgres
+        container_name: cg-postgres
+        volumes:
+            - ./www/:/var/www/
+        ports:
+            - "5433:5432"
+
+
+
+
+
