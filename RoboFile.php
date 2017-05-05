@@ -54,7 +54,7 @@ class RoboFile extends \Robo\Tasks
      */
     public function dependenciesComposerInstall()
     {
-        $this->getTaskDocker('php')
+        $this->getTaskDocker('cg-php')
             ->composerInstall('core')
             ->run()
         ;
@@ -105,17 +105,16 @@ class DockerStack extends \Robo\Task\CommandStack
         $this->setName($name);
     }
 
-
-    public function command($command)
-    {
-        $this->exec('docker exec -t ' . $this->name . ' bash -c "' . $command . '"');
-
-        return $this;
-    }
-
     public function composerInstall($directory)
     {
         $this->command("cd $directory; composer install --no-interaction");
+
+        return $this;
+    }
+    
+    public function command($command)
+    {
+        $this->exec('docker exec -t ' . $this->name . ' bash -c "' . $command . '"');
 
         return $this;
     }
