@@ -31,7 +31,7 @@ class RoboFile extends \Robo\Tasks
      */
     public function appBuild()
     {
-        $this->getTaskDocker()
+        $this->getDockerContainer()
             ->exec('docker-compose up -d --remove-orphans --build')
             ->run()
         ;
@@ -42,7 +42,7 @@ class RoboFile extends \Robo\Tasks
      */
     public function setupParameters()
     {
-        $this->taskFileSystemStack()
+        $this->taskFilesystemStack()
             ->copy('www/core/app/config/parameters.yml.dist', 'www/core/app/config/parameters.yml')
             ->run();
     }
@@ -52,7 +52,7 @@ class RoboFile extends \Robo\Tasks
      */
     public function dependenciesInstall()
     {
-        $this->getTaskDocker('cg-php')
+        $this->getDockerContainer('cg-php')
             ->composerInstall('core')
             ->run()
         ;
@@ -63,7 +63,7 @@ class RoboFile extends \Robo\Tasks
      */
     public function configureApp()
     {
-        $ip = $this->getTaskDocker()
+        $ip = $this->getDockerContainer()
             ->exec('docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" nginx')
             ->run()
             ->getMessage();
@@ -81,7 +81,7 @@ class RoboFile extends \Robo\Tasks
      *
      * @return DockerStack
      */
-    private function getTaskDocker($name = '')
+    private function getDockerContainer($name = '')
     {
         return new DockerStack($name);
     }
@@ -115,14 +115,6 @@ class DockerStack extends \Robo\Task\CommandStack
         $this->exec('docker exec -t ' . $this->name . ' bash -c "' . $command . '"');
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 }
 
