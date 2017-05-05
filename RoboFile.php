@@ -1,8 +1,6 @@
 <?php
-/**
- * Robo file for capgeminiEntity project
- */
-use Robo\Task\Shared\TaskException;
+
+use Robo\Exception\TaskException;
 
 if (!file_exists('robo')) {
     echo "Robo requirement missing. Downloading...\n\n";
@@ -24,7 +22,7 @@ class RoboFile extends \Robo\Tasks
     {
         $this->appBuild();
         $this->setupParameters();
-        $this->dependenciesComposerInstall();
+        $this->dependenciesInstall();
         $this->configureApp();
     }
 
@@ -52,7 +50,7 @@ class RoboFile extends \Robo\Tasks
     /**
      * Install Composer dependencies
      */
-    public function dependenciesComposerInstall()
+    public function dependenciesInstall()
     {
         $this->getTaskDocker('cg-php')
             ->composerInstall('core')
@@ -102,7 +100,7 @@ class DockerStack extends \Robo\Task\CommandStack
      */
     public function __construct($name = '')
     {
-        $this->setName($name);
+        $this->name = $name;
     }
 
     public function composerInstall($directory)
@@ -125,14 +123,6 @@ class DockerStack extends \Robo\Task\CommandStack
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 }
 
